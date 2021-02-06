@@ -1,0 +1,86 @@
+<template>
+  <nuxt-link :to="postLink" class="post-preview">
+    <article>
+      <div
+        class="post-thumbnail"
+        :style="{
+          'background-image': `url('${thumbnail}')`,
+        }"
+      ></div>
+      <div class="post-content">
+        <h1>{{ title }}</h1>
+        <p>{{ previewText }}</p>
+      </div>
+    </article>
+  </nuxt-link>
+</template>
+
+<script>
+export default {
+  name: 'PostPreview',
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    isAdmin: {
+      type: Boolean,
+      // because we are always passing isAdmin with default as false
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    previewText: {
+      type: String,
+      required: true,
+    },
+    thumbnail: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    postLink() {
+      return (this.isAdmin ? '/admin/' : '/posts/') + this.id;
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+a {
+  text-decoration: none;
+  color: black;
+
+  &:hover .post-content,
+  &:active .post-content {
+    background-color: #ccc;
+  }
+}
+
+.post-preview {
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 2px #ccc;
+  background-color: white;
+  width: 90%;
+
+  @media (min-width: 850px) {
+    width: 400px;
+    margin: 10px;
+  }
+
+  .post-thumbnail {
+    width: 100%;
+    height: 200px;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .post-content {
+    padding: 10px;
+    text-align: center;
+  }
+}
+</style>
