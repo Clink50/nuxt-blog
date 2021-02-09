@@ -8,8 +8,10 @@
 
 <script>
 import { mapActions } from 'vuex';
+
 export default {
   layout: 'admin',
+  middleware: ['check-auth', 'auth'],
   async asyncData({ params, $axios, error }) {
     try {
       const data = await $axios.$get(`/posts/${params.postId}.json`);

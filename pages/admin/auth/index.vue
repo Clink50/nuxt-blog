@@ -1,9 +1,13 @@
 <template>
   <div class="admin-auth-page">
     <div class="auth-container">
-      <form>
-        <AppControlInput type="email">Email Address</AppControlInput>
-        <AppControlInput type="password">Password</AppControlInput>
+      <form @submit.prevent="onSubmit">
+        <AppControlInput v-model="email" type="email"
+          >Email Address</AppControlInput
+        >
+        <AppControlInput v-model="password" type="password"
+          >Password</AppControlInput
+        >
         <AppButton type="submit">{{ isLogin ? 'Login' : 'Sign Up' }}</AppButton>
         <AppButton
           type="button"
@@ -18,13 +22,29 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'AdminAuthPage',
   layout: 'admin',
   data() {
     return {
       isLogin: true,
+      email: '',
+      password: '',
     };
+  },
+  methods: {
+    ...mapActions('auth', ['authenticateUser']),
+    async onSubmit() {
+      const requestData = {
+        email: this.email,
+        password: this.password,
+        isLogin: this.isLogin,
+      };
+      await this.authenticateUser(requestData);
+      this.$router.push('/admin');
+    },
   },
 };
 </script>

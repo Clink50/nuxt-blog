@@ -26,14 +26,17 @@ export const actions = {
   setPosts({ commit }, posts) {
     commit('setPosts', posts);
   },
-  async addPost({ commit }, post) {
+  async addPost({ commit, rootState: { auth } }, post) {
     try {
       const createdPost = {
         ...post,
         updatedDate: new Date(),
       };
 
-      const data = await this.$axios.$post('/posts.json', createdPost);
+      const data = await this.$axios.$post(
+        `/posts.json?auth=${auth.token}`,
+        createdPost
+      );
       // data.name = the id in firebase
       commit('addPost', {
         ...createdPost,
@@ -47,9 +50,12 @@ export const actions = {
       );
     }
   },
-  async editPost({ commit }, editedPost) {
+  async editPost({ commit, rootState: { auth } }, editedPost) {
     try {
-      await this.$axios.$put(`/posts/${editedPost.id}.json`, editedPost);
+      await this.$axios.$put(
+        `/posts/${editedPost.id}.json?auth=${auth.token}`,
+        editedPost
+      );
       commit('editPost', editedPost);
       return;
     } catch (e) {

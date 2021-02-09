@@ -64,14 +64,14 @@ export default {
       baseURL: process.env.DB_URL,
       credentials: false,
     },
+    fbBaseUrl: process.env.FB_BASE_URL,
+    fbApiSecret: process.env.FB_API_KEY,
   },
 
   // Should hold all env variables that are private and should
   // not be exposed on the frontend and is exposed to only the
   // server side with $config (it overrides publicRuntimeConfig)
-  privateRuntimeConfig: {
-    apiSecret: process.env.API_SECRET,
-  },
+  privateRuntimeConfig: {},
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
@@ -80,4 +80,8 @@ export default {
     name: 'fade',
     mode: 'out-in',
   },
+  // If we wanted to the middleware running on every route
+  // router: {
+  //   middleware: 'log',
+  // },
 };
