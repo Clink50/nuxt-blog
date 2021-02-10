@@ -28,6 +28,7 @@ module.exports = {
       {
         semi: true,
         endOfLine: 'auto',
+        printWidth: 100,
       },
     ],
   },

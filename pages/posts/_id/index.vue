@@ -3,21 +3,15 @@
     <section class="post">
       <h1 class="post__title">{{ loadedPost.title }}</h1>
       <div class="post__details">
-        <div class="post__details--detail">
-          Last updated on {{ loadedPost.updatedDate | date }}
-        </div>
-        <div class="post__details--detail">
-          Written by {{ loadedPost.author }}
-        </div>
+        <div class="post__details--detail">Last updated on {{ loadedPost.updatedDate | date }}</div>
+        <div class="post__details--detail">Written by {{ loadedPost.author }}</div>
       </div>
       <p class="post__content">{{ loadedPost.content }}</p>
     </section>
     <section class="post__feedback">
       <p>
         Let me know what you think about the post, send an email to
-        <a href="mailto:feedback@my-awesome-domain.com"
-          >feedback@my-awesome-domain.com</a
-        >
+        <a href="mailto:feedback@my-awesome-domain.com">feedback@my-awesome-domain.com</a>
       </p>
     </section>
   </div>

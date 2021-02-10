@@ -2,12 +2,10 @@
   <div class="admin-auth-page">
     <div class="auth-container">
       <form @submit.prevent="onSubmit">
-        <AppControlInput v-model="email" type="email"
+        <AppControlInput v-model="email" type="email" aria-labelledby="testing"
           >Email Address</AppControlInput
         >
-        <AppControlInput v-model="password" type="password"
-          >Password</AppControlInput
-        >
+        <AppControlInput v-model="password" type="password">Password</AppControlInput>
         <AppButton type="submit">{{ isLogin ? 'Login' : 'Sign Up' }}</AppButton>
         <AppButton
           type="button"

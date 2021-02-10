@@ -1,12 +1,8 @@
-import {
-  SIGN_UP_ENDPOINT,
-  SIGN_IN_ENDPOINT,
-  FB_ACCOUNT_TYPE,
-} from '@/utils/constants';
+import { SIGN_UP_ENDPOINT, SIGN_IN_ENDPOINT, FB_ACCOUNT_TYPE } from '@/utils/constants';
 import Cookie from 'js-cookie';
 
 export const state = () => ({
-  token: '',
+  token: null,
 });
 
 export const mutations = {
@@ -19,7 +15,7 @@ export const mutations = {
 };
 
 export const actions = {
-  async authenticateUser({ commit, dispatch }, authData) {
+  async authenticateUser({ commit }, authData) {
     try {
       const type = authData.isLogin ? SIGN_IN_ENDPOINT : SIGN_UP_ENDPOINT;
       const requestData = {
@@ -34,15 +30,9 @@ export const actions = {
       );
 
       commit('setToken', idToken);
-      localStorage.setItem('token', idToken);
-      localStorage.setItem(
-        'tokenExpiration',
-        // Datetime when the token will expire
-        new Date().getTime() + expiresIn * 1000
-      );
+
       Cookie.set('jwt', idToken);
-      Cookie.set('expirationDate', new Date().getTime() + expiresIn * 1000);
-      dispatch('setLogoutTimer', expiresIn * 1000);
+      Cookie.set('expirationDate', new Date().getTime() + +expiresIn);
       return;
     } catch (e) {
       throw new Error(
@@ -51,43 +41,33 @@ export const actions = {
       );
     }
   },
-  setLogoutTimer({ commit }, duration) {
-    setTimeout(() => {
-      commit('clearToken');
-    }, duration);
-  },
   initAuth({ commit, dispatch }, req) {
-    let token = null;
-    let expirationDate = null;
+    const token = !Cookie.get('jwt')
+      ? req?.headers
+        ? req.headers.cookie
+        : null
+      : Cookie.get('jwt');
 
-    if (req) {
-      if (!req.headers.cookie) {
-        return;
-      }
-      [, token] = req.headers.cookie
-        .split(';')
-        .find((key) => key.trim())
-        .startsWith('jwt=')
-        .split('=');
-      if (!token) {
-        return;
-      }
-      [, expirationDate] = req.headers.cookie
-        .split(';')
-        .find((key) => key.trim())
-        .startsWith('expirationDate=')
-        .split('=');
-    } else {
-      token = localStorage.getItem('token');
-      expirationDate = localStorage.getItem('tokenExpiration');
-
-      if (new Date().getTime > expirationDate || !token) {
-        return;
-      }
+    if (!token) {
+      console.log('Token not found in cookie.');
+      dispatch('logout');
+      return;
     }
 
-    dispatch('setLogoutTimer', +expirationDate - new Date().getTime());
+    const expirationDate = Cookie.get('expirationDate');
+
+    if (new Date().getTime() > +expirationDate) {
+      console.log('No token or invalid token.');
+      dispatch('logout');
+      return;
+    }
+
     commit('setToken', token);
+  },
+  logout({ commit }) {
+    commit('clearToken');
+    Cookie.remove('jwt');
+    Cookie.remove('expirationDate');
   },
 };
 export const getters = {

@@ -13,9 +13,7 @@ export const mutations = {
     state.loadedPosts.push(post);
   },
   editPost: (state, editedPost) => {
-    const postIndex = state.loadedPosts.findIndex(
-      (post) => post.id === editedPost.id
-    );
+    const postIndex = state.loadedPosts.findIndex((post) => post.id === editedPost.id);
     state.loadedPosts[postIndex] = editedPost;
   },
 };
@@ -33,10 +31,7 @@ export const actions = {
         updatedDate: new Date(),
       };
 
-      const data = await this.$axios.$post(
-        `/posts.json?auth=${auth.token}`,
-        createdPost
-      );
+      const data = await this.$axios.$post(`/posts.json?auth=${auth.token}`, createdPost);
       // data.name = the id in firebase
       commit('addPost', {
         ...createdPost,
@@ -44,25 +39,16 @@ export const actions = {
       });
       return;
     } catch (e) {
-      throw new Error(
-        'Error occurred when attempting to create a new post:',
-        e
-      );
+      throw new Error('Error occurred when attempting to create a new post:', e);
     }
   },
   async editPost({ commit, rootState: { auth } }, editedPost) {
     try {
-      await this.$axios.$put(
-        `/posts/${editedPost.id}.json?auth=${auth.token}`,
-        editedPost
-      );
+      await this.$axios.$put(`/posts/${editedPost.id}.json?auth=${auth.token}`, editedPost);
       commit('editPost', editedPost);
       return;
     } catch (e) {
-      throw new Error(
-        `Error occurred when attempting to edit the postId: ${editedPost.id}`,
-        e
-      );
+      throw new Error(`Error occurred when attempting to edit the postId: ${editedPost.id}`, e);
     }
   },
 };
